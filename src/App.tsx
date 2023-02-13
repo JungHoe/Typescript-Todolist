@@ -1,24 +1,42 @@
-import { useState } from "react";
+import "@/style/global.css";
+import { useState, useReducer } from "react";
 import { ConfigProvider, theme, Layout, Row, Divider } from "antd";
 import { ThemeProvider } from "styled-components";
-import { Status } from "@/types/enums";
-import "@/style/global.css";
+import { Status, Mode, Theme, ThemeMainColor } from "@/types/enums";
+import { TodoItemFormInterface } from "@/types";
 import LayoutHeader from "@/components/Layouts/Header";
-import TodoItem from "@/components/TodoItem";
+import TodoItems from "@/components/TodoItems";
+import { useModal } from "@/hooks";
+import TodoItemModal from "@/components/TodoItemModal";
+import { todoReducer, initialState } from "@/reducers";
+import * as actions from "@/reducers/actions";
 
 const { Content, Footer } = Layout;
 const { darkAlgorithm, defaultAlgorithm } = theme;
 
 const App: React.FC = () => {
   const [isDark, setIsDark] = useState(true);
+  const [itemStatusType, setItemStatusType] = useState<Status>(Status.Todo);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
+  const [modalProps, toggleModal] = useModal();
 
-  const themeMode = isDark ? "dark" : "light";
+  const handleClickCreate = (type: Status) => {
+    setItemStatusType(type);
+    toggleModal(Mode.create);
+  };
+  const handleAddItem = ({ title, description }: TodoItemFormInterface) => {
+    const payload = { title, description, status: itemStatusType };
+    dispatch({ type: actions.ADD_ITEM, payload });
+    toggleModal();
+  };
+
+  const themeMode = isDark ? Theme.dark : Theme.light;
   return (
     <ConfigProvider
       theme={{
         algorithm: isDark ? darkAlgorithm : defaultAlgorithm,
         token: {
-          colorBgBase: isDark ? "#25262A" : "#fff",
+          colorBgBase: isDark ? ThemeMainColor.dark : ThemeMainColor.light,
         },
       }}
     >
@@ -31,22 +49,30 @@ const App: React.FC = () => {
           <Layout id="main-app">
             <Content>
               <Divider />
+              <TodoItemModal
+                isOpen={modalProps.isOpen}
+                toggleModal={toggleModal}
+                onAddItem={handleAddItem}
+                status={itemStatusType}
+              ></TodoItemModal>
               <Row className="itemRow" justify={"center"}>
-                <TodoItem status={Status.Todo} items={[]}></TodoItem>
+                <TodoItems
+                  status={Status.Todo}
+                  items={state.todoItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
                 <Divider type="vertical" />
-                <TodoItem status={Status.Doing} items={[]}></TodoItem>
+                <TodoItems
+                  status={Status.Doing}
+                  items={state.doingItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
                 <Divider type="vertical" />
-                <TodoItem
+                <TodoItems
                   status={Status.Done}
-                  items={[
-                    {
-                      id: 1,
-                      title: "테마 모드 구현",
-                      status: Status.Done,
-                      description: "테스트 메세지. \n 개행테스트",
-                    },
-                  ]}
-                ></TodoItem>
+                  items={state.doneItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
               </Row>
             </Content>
           </Layout>

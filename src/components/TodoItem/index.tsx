@@ -1,42 +1,41 @@
-// import { Col, Row, Input, Button } from "antd";
+import React from "react";
 import { Button, Popover } from "antd";
-import { SmallDashOutlined } from "@ant-design/icons";
-
-import TodoItemHeader from "@/components/TodoItemHeader";
-import { Status } from "@/types/enums";
-import { TodoItemType } from "@/types";
-import StyleWrapper from "@/style/TodoItem/wrapper";
+import { SmallDashOutlined, DragOutlined } from "@ant-design/icons";
 import StyleItem from "@/style/TodoItem";
+import InteractionButton from "@/style/TodoItem/InteractionButton";
+interface TodoItem {
+  title: string;
+  description: string;
+  useInteractionButton?: boolean;
+}
 
-type Props = {
-  status: Status;
-  items: TodoItemType[];
-};
-const TodoItems = (props: Props) => {
+const TodoItem: React.FC<TodoItem> = ({
+  title,
+  description,
+  useInteractionButton = true,
+}) => {
   return (
-    <StyleWrapper className={`item-${props.status}`} span={7}>
-      <TodoItemHeader type={props.status}></TodoItemHeader>
-      <ul>
-        {props.items?.map((item) => (
-          <StyleItem key={item.id}>
-            <h3 className="title">{item.title}</h3>
-            <div className="description">{item.description}</div>
-            <Popover
-              trigger={"click"}
-              content={
-                <div style={{ width: 100 }}>
-                  <Button>Edit</Button>
-                  <Button>Remove</Button>
-                </div>
-              }
-            >
-              <SmallDashOutlined />
-            </Popover>
-          </StyleItem>
-        ))}
-      </ul>
-    </StyleWrapper>
+    <StyleItem>
+      <h3 className="title">{title}</h3>
+      <div className="description">{description}</div>
+      {useInteractionButton && (
+        <>
+          <DragOutlined />
+          <Popover
+            trigger={"click"}
+            content={
+              <InteractionButton>
+                <Button>Edit</Button>
+                <Button>Remove</Button>
+              </InteractionButton>
+            }
+          >
+            <SmallDashOutlined />
+          </Popover>
+        </>
+      )}
+    </StyleItem>
   );
 };
 
-export default TodoItems;
+export default TodoItem;

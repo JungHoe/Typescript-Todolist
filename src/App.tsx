@@ -1,81 +1,84 @@
-import { useState, useCallback } from "react";
-import {
-  ConfigProvider,
-  theme,
-  Layout,
-  Col,
-  Row,
-  Switch,
-  Input,
-  Button,
-  Divider,
-} from "antd";
-import "./App.css";
-const { Header, Content, Footer } = Layout;
-const { darkAlgorithm, defaultAlgorithm } = theme;
+import "@/style/global.css";
+import { useState, useReducer } from "react";
+import { ConfigProvider, theme, Layout, Row, Divider } from "antd";
+import { ThemeProvider } from "styled-components";
+import { Status, Mode, Theme, ThemeMainColor } from "@/types/enums";
+import { TodoItemFormInterface } from "@/types";
+import LayoutHeader from "@/components/Layouts/Header";
+import TodoItems from "@/components/TodoItems";
+import { useModal } from "@/hooks";
+import TodoItemModal from "@/components/TodoItemModal";
+import { todoReducer, initialState } from "@/reducers";
+import * as actions from "@/reducers/actions";
 
-interface TodoItem {
-  id: number;
-  text: string;
-  status: string;
-}
+const { Content, Footer } = Layout;
+const { darkAlgorithm, defaultAlgorithm } = theme;
 
 const App: React.FC = () => {
   const [isDark, setIsDark] = useState(true);
-  const [text, setText] = useState("");
-  const [list, setList] = useState<TodoItem[]>([
-    { id: 1, text: "테스트 메세지", status: "doing" },
-  ]);
+  const [itemStatusType, setItemStatusType] = useState<Status>(Status.Todo);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
+  const [modalProps, toggleModal] = useModal();
 
-  const onChangeText = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  }, []);
-  const onSubmitTodo = () => {
-    setList([...list, { id: new Date().getTime(), text, status: "doing" }]);
-    setText("");
+  const handleClickCreate = (type: Status) => {
+    setItemStatusType(type);
+    toggleModal(Mode.create);
   };
-  const themeName = isDark ? "dark" : "light";
+  const handleAddItem = ({ title, description }: TodoItemFormInterface) => {
+    const payload = { title, description, status: itemStatusType };
+    dispatch({ type: actions.ADD_ITEM, payload });
+    toggleModal();
+  };
+
+  const themeMode = isDark ? Theme.dark : Theme.light;
   return (
     <ConfigProvider
       theme={{
         algorithm: isDark ? darkAlgorithm : defaultAlgorithm,
         token: {
-          colorBgBase: isDark ? "#262626" : "#fff",
+          colorBgBase: isDark ? ThemeMainColor.dark : ThemeMainColor.light,
         },
       }}
     >
-      <Layout id="layout-wrapper" className={themeName}>
-        <Header className="ta-c">
-          <h2>Todo-List</h2>
-          <div className="mode-container">
-            <Switch
-              checked={!isDark}
-              checkedChildren="Light"
-              unCheckedChildren="Dark"
-              onClick={() => setIsDark(!isDark)}
-            />
-          </div>
-        </Header>
-        <Layout id="main-app">
-          <Content>
-            <Row className="write-form">
-              <Col span={20}>
-                <Input value={text} onChange={onChangeText}></Input>
-              </Col>
-              <Col offset={1} span={3}>
-                <Button onClick={onSubmitTodo}>작성</Button>
-              </Col>
-            </Row>
-            <Divider />
-            <ul>
-              {list?.map((item) => {
-                return <li key={item.id}>{item.text}</li>;
-              })}
-            </ul>
-          </Content>
+      <ThemeProvider theme={{ themeMode }}>
+        <Layout id="layout-wrapper" className={themeMode}>
+          <LayoutHeader
+            isDark={isDark}
+            onChangeTheme={() => setIsDark(!isDark)}
+          />
+          <Layout id="main-app">
+            <Content>
+              <Divider />
+              <TodoItemModal
+                isOpen={modalProps.isOpen}
+                toggleModal={toggleModal}
+                onAddItem={handleAddItem}
+                status={itemStatusType}
+              ></TodoItemModal>
+              <Row className="itemRow" justify={"center"}>
+                <TodoItems
+                  status={Status.Todo}
+                  items={state.todoItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
+                <Divider type="vertical" />
+                <TodoItems
+                  status={Status.Doing}
+                  items={state.doingItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
+                <Divider type="vertical" />
+                <TodoItems
+                  status={Status.Done}
+                  items={state.doneItems}
+                  onClickCreate={handleClickCreate}
+                ></TodoItems>
+              </Row>
+            </Content>
+          </Layout>
+          <Footer className="ta-c">footer</Footer>
         </Layout>
-        <Footer className="ta-c">footer</Footer>
-      </Layout>
+      </ThemeProvider>
     </ConfigProvider>
   );
 };

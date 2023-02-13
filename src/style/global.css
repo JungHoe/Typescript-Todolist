@@ -20,6 +20,10 @@
   height: 90vh;
 }
 
-.write-form {
-  margin-top: 20px;
+.itemRow {
+  margin-top: 50px;
+  min-height: 500px;
+}
+.itemRow .ant-divider-vertical {
+  height: auto;
 }

@@ -1,15 +1,26 @@
-import React from "react";
 import { Layout, Switch } from "antd";
+import styled from "styled-components";
+import { isThemeDark } from "@/hooks";
 
 const { Header } = Layout;
+const StyledHeader = styled(Header)`
+  background-color: ${({ theme }) =>
+    isThemeDark(theme) ? "#001529" : "#de483a"} !important;
+`;
 interface Props {
+  /**
+   * 테마모드를 확인하는 플래그
+   */
   isDark: boolean;
   onChangeTheme: () => void;
 }
 
+/**
+ * Primary UI component for user interaction
+ */
 const LayoutHeader = ({ isDark, onChangeTheme }: Props) => {
   return (
-    <Header className="ta-c">
+    <StyledHeader className="ta-c">
       <h2>Todo-List</h2>
       <div className="mode-container">
         <Switch
@@ -19,7 +30,7 @@ const LayoutHeader = ({ isDark, onChangeTheme }: Props) => {
           onClick={onChangeTheme}
         />
       </div>
-    </Header>
+    </StyledHeader>
   );
 };
 

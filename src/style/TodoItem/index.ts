@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { isThemeDark } from "@/hooks";
 
 const StyledTodoItem = styled.li`
+  max-width: 500px;
   list-style: none;
   position: relative;
   background-color: ${({ theme }) =>

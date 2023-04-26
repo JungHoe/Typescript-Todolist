@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Layout } from "antd";
-import Header from "./Header";
+import Header from ".";
 import { Theme } from "@/types/enums";
 
 // const meta = {
@@ -22,15 +21,6 @@ const meta: Meta<typeof Header> = {
   title: "layout/Header",
   component: Header,
   tags: ["autodocs"],
-  decorators: [
-    (Story, arg) => {
-      return (
-        <Layout id="layout-wrapper" className={arg.theme}>
-          <Story />
-        </Layout>
-      );
-    },
-  ],
 };
 
 export default meta;

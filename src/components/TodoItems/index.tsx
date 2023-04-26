@@ -2,7 +2,9 @@ import TodoItemHeader from "@/components/TodoItemHeader";
 import { Status } from "@/types/enums";
 import { TodoItemInterface } from "@/types";
 import TodoItem from "@/components/TodoItem";
-import StyledTodoItemWrapper from "@/style/TodoItem/wrapper";
+import StyledTodoItemWrapper, {
+  StyledTodoItemList,
+} from "@/style/TodoItem/wrapper";
 
 interface TodoItemsProps {
   status: Status;
@@ -20,7 +22,7 @@ const TodoItems: React.FC<TodoItemsProps> = ({
         type={status}
         onClickIcon={onClickCreate}
       ></TodoItemHeader>
-      <ul>
+      <StyledTodoItemList>
         {items?.map((item) => (
           <TodoItem
             key={item.id}
@@ -28,7 +30,7 @@ const TodoItems: React.FC<TodoItemsProps> = ({
             description={item.description}
           ></TodoItem>
         ))}
-      </ul>
+      </StyledTodoItemList>
     </StyledTodoItemWrapper>
   );
 };

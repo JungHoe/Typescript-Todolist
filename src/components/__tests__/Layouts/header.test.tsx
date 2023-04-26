@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { composeStories } from "@storybook/react";
-import * as stories from "@/components/Layouts/Header.stories";
+import * as stories from "@/components/Layouts/Header/Header.stories";
 
 const { DarkTheme, LightTheme } = composeStories(stories);
 

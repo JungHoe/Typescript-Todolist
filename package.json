@@ -59,6 +59,7 @@
       "\\.(png)$": "<rootDir>/jest/fileMock.ts",
       "\\.svg": "jest-svg-transformer",
       "^@/(.*)$": "<rootDir>/src/$1"
-    }
+    },
+    "testPathIgnorePatterns":["/node_modules/","/example/"]
   }
 }

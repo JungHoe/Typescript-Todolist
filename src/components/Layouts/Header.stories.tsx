@@ -3,7 +3,22 @@ import { Layout } from "antd";
 import Header from "./Header";
 import { Theme } from "@/types/enums";
 
-const meta = {
+// const meta = {
+//   title: "layout/Header",
+//   component: Header,
+//   tags: ["autodocs"],
+//   decorators: [
+//     (Story, arg) => {
+//       return (
+//         <Layout id="layout-wrapper" className={arg.theme}>
+//           <Story />
+//         </Layout>
+//       );
+//     },
+//   ],
+// } satisfies Meta<typeof Header>;
+
+const meta: Meta<typeof Header> = {
   title: "layout/Header",
   component: Header,
   tags: ["autodocs"],
@@ -16,7 +31,7 @@ const meta = {
       );
     },
   ],
-} satisfies Meta<typeof Header>;
+};
 
 export default meta;
 

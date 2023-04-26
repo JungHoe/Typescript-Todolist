@@ -1,6 +1,7 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
 import "@/style/global.css";
+import "antd/dist/reset.css";
 import { Theme } from "../src/types/enums";
 import WithTheme from "../src/hoc/withTheme";
 

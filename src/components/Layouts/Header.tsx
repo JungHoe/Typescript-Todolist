@@ -12,6 +12,9 @@ interface Props {
    * 테마모드를 확인하는 플래그
    */
   isDark: boolean;
+  /**
+   * 테마를 변경하는 함수 hoc에서 내려받는다.
+   */
   onChangeTheme: () => void;
 }
 
@@ -20,7 +23,7 @@ interface Props {
  */
 const LayoutHeader = ({ isDark, onChangeTheme }: Props) => {
   return (
-    <StyledHeader className="ta-c">
+    <StyledHeader className="ta-c" data-testid="layout-header">
       <h2>Todo-List</h2>
       <div className="mode-container">
         <Switch

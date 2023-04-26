@@ -14,5 +14,11 @@ const config: StorybookConfig = {
     autodocs: "tag",
     defaultName: "Documentation",
   },
+  typescript: {
+    // Overrides the default Typescript configuration to allow multi-package components to be documented via Autodocs.
+    reactDocgen: "react-docgen",
+    skipBabel: true,
+    check: false,
+  },
 };
 export default config;

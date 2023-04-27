@@ -6,16 +6,26 @@ import StyleItem from "@/style/TodoItem";
 interface FormProps {
   form: FormInstance;
   onFinish: (value: TodoItemFormInterface) => void;
+  initialValues?: { title: string; description: string };
 }
-const TodoItemForm: React.FC<FormProps> = ({ form, onFinish }) => {
+const TodoItemForm: React.FC<FormProps> = ({
+  form,
+  onFinish,
+  initialValues,
+}) => {
   useEffect(() => {
     return () => {
-      form.resetFields();
+      form?.resetFields();
     };
   }, []);
   return (
     <StyleItem>
-      <Form form={form} name="basic" onFinish={onFinish}>
+      <Form
+        form={form}
+        name="basic"
+        onFinish={onFinish}
+        initialValues={initialValues}
+      >
         <Form.Item name={"title"} noStyle={true}>
           <Input
             className="form-title"

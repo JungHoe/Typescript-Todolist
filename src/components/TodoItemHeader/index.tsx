@@ -8,7 +8,7 @@ const TodoItemHeader: React.FC<{ type: Status; onClickIcon: Function }> = ({
   onClickIcon,
 }) => {
   return (
-    <StyledHeader className={type}>
+    <StyledHeader className={type} data-testid="todo-item-header">
       <h3>{StatusLabel[type]}</h3>
       <PlusSquareOutlined
         onClick={() => {

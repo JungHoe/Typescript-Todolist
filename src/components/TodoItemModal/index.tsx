@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "antd";
 import { Status, StatusLabel } from "@/types/enums";
-import { TodoItemFormInterface } from "@/types";
+import { TodoItemInterface } from "@/types";
 
 import TodoItemForm from "@/components/TodoItemForm";
 import StyledTodoModal from "@/style/TodoItem/Modal";
@@ -9,7 +9,7 @@ import StyledTodoModal from "@/style/TodoItem/Modal";
 interface ModalProperty {
   isOpen: boolean;
   toggleModal: Function;
-  onAddItem: (payload: TodoItemFormInterface) => void;
+  onAddItem: (payload: TodoItemInterface) => void;
   status: Status;
 }
 

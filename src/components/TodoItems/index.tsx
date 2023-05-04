@@ -1,6 +1,9 @@
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 import TodoItemHeader from "@/components/TodoItemHeader";
 import { Status } from "@/types/enums";
-import { TodoItemInterface } from "@/types";
+import { TodoItem as Item } from "@/types";
 import TodoItem from "@/components/TodoItem";
 import StyledTodoItemWrapper, {
   StyledTodoItemList,
@@ -8,13 +11,15 @@ import StyledTodoItemWrapper, {
 
 interface TodoItemsProps {
   status: Status;
-  items: TodoItemInterface[];
+  items: Item[];
   onClickCreate: Function;
+  onMoveItem: Function;
 }
 const TodoItems: React.FC<TodoItemsProps> = ({
   status,
-  onClickCreate,
   items,
+  onClickCreate,
+  onMoveItem,
 }) => {
   return (
     <StyledTodoItemWrapper className={`item-${status}`} span={7}>
@@ -23,13 +28,17 @@ const TodoItems: React.FC<TodoItemsProps> = ({
         onClickIcon={onClickCreate}
       ></TodoItemHeader>
       <StyledTodoItemList>
-        {items?.map((item) => (
-          <TodoItem
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          ></TodoItem>
-        ))}
+        <DndProvider backend={HTML5Backend}>
+          {items?.map((item, index) => (
+            <TodoItem
+              key={item.id}
+              item={item}
+              index={index}
+              useInteractionButton
+              onMoveItem={onMoveItem}
+            ></TodoItem>
+          ))}
+        </DndProvider>
       </StyledTodoItemList>
     </StyledTodoItemWrapper>
   );

@@ -1,42 +1,35 @@
 import { Status } from "@/types/enums";
-import { TodoItemInterface } from "@/types";
+import { TodoItem } from "@/types";
 import * as actions from "./actions";
+
 interface redcuerInterface {
-  todoItems: TodoItemInterface[];
-  doingItems: TodoItemInterface[];
-  doneItems: TodoItemInterface[];
+  todoItems: TodoItem[];
+  doingItems: TodoItem[];
+  doneItems: TodoItem[];
 }
 
-class Item {
-  private id: number;
-  constructor(
-    public title: string,
-    public description: string,
-    public order: number
-  ) {
-    this.id = new Date().getTime();
-  }
-}
-
+const sampleItem1 = new TodoItem(
+  "테마 모드 구현",
+  "테스트 메세지. \n 개행테스트",
+  Status.Done
+);
+const sampleItem2 = new TodoItem(
+  "line-clamp 테스트",
+  `내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@`,
+  Status.Done
+);
+const sampleItem3 = new TodoItem(
+  "테마 모드  구현 ㅠㅠㅠㅠㅠㅠㅠㅠ",
+  "테스트 메세지. \n ㅇㅅㅇㅅㅇㅅㅇㅅㅇㅅㅇㅅㅇ",
+  Status.Done
+);
+sampleItem1.setId(1);
+sampleItem2.setId(2);
+sampleItem3.setId(3);
 export const initialState = {
   todoItems: [],
   doingItems: [],
-  doneItems: [
-    {
-      id: 1,
-      title: "테마 모드 구현",
-      status: Status.Done,
-      description: "테스트 메세지. \n 개행테스트",
-      order: 1,
-    },
-    {
-      id: 2,
-      title: "line-clamp 테스트",
-      status: Status.Done,
-      description: `내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@`,
-      order: 2,
-    },
-  ],
+  doneItems: [sampleItem1, sampleItem2, sampleItem3],
 };
 
 export const todoReducer = (
@@ -46,9 +39,26 @@ export const todoReducer = (
   switch (type) {
     case actions.ADD_ITEM:
       const itemKey = `${payload.status}Items` as keyof redcuerInterface;
-      const nextOrder = state[itemKey].length + 1;
-      const t1 = new Item(payload.title, payload.description, nextOrder);
-      return { ...state, [itemKey]: [...state[itemKey], t1] };
+      const newItem = new TodoItem(
+        payload.title,
+        payload.description,
+        payload.status
+      );
+      return { ...state, [itemKey]: [...state[itemKey], newItem] };
+    case actions.MOVE_ITEM:
+      const { dragItem, overItem } = payload;
+      if (dragItem.status === overItem.status) {
+        const itemKey = `${dragItem.status}Items` as keyof redcuerInterface;
+        const items = state[itemKey];
+
+        const dragIndex = dragItem.index;
+        const overIndex = overItem.index;
+
+        const nextItems = [...items];
+        const poped = nextItems.splice(dragIndex, 1);
+        nextItems.splice(overIndex, 0, poped[0]);
+        return { ...state, [itemKey]: nextItems };
+      }
     default:
       return state;
   }

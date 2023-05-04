@@ -9,6 +9,11 @@ const StyledTodoItem = styled.li`
     isThemeDark(theme) ? "#424448" : "#d8d1b8"};
   padding: 10px;
   padding-right: 20px;
+  &.dragging {
+    border: 1px solid deepskyblue;
+    border-style: dashed;
+    opacity: 0.5;
+  }
   .title {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -28,7 +33,7 @@ const StyledTodoItem = styled.li`
   }
   .anticon {
     position: absolute;
-    &.anticon-drag {
+    &.dragCursor {
       cursor: grab;
       right: 25px;
       top: 5px;

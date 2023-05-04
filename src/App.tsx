@@ -2,8 +2,8 @@ import "@/style/global.css";
 import { useState, useReducer } from "react";
 import { Layout, Row, Divider } from "antd";
 import WithTheme, { ThemeProps } from "@/hoc/withTheme";
+import { TodoItemInterface } from "@/types";
 import { Status, Mode, Theme } from "@/types/enums";
-import { TodoItemFormInterface } from "@/types";
 import LayoutHeader from "@/components/Layouts/Header";
 import TodoItems from "@/components/TodoItems";
 import { useModal } from "@/hooks";
@@ -22,10 +22,14 @@ const App: React.FC<ThemeProps> = ({ theme, onChangeTheme }) => {
     setItemStatusType(type);
     toggleModal(Mode.create);
   };
-  const handleAddItem = ({ title, description }: TodoItemFormInterface) => {
+  const handleAddItem = ({ title, description }: TodoItemInterface) => {
     const payload = { title, description, status: itemStatusType };
     dispatch({ type: actions.ADD_ITEM, payload });
     toggleModal();
+  };
+  const handleMoveItem = (dragItem: any, overItem: any) => {
+    const payload = { dragItem, overItem };
+    dispatch({ type: actions.MOVE_ITEM, payload });
   };
 
   return (
@@ -48,18 +52,21 @@ const App: React.FC<ThemeProps> = ({ theme, onChangeTheme }) => {
               status={Status.Todo}
               items={state.todoItems}
               onClickCreate={handleClickCreate}
+              onMoveItem={handleMoveItem}
             ></TodoItems>
             <Divider type="vertical" />
             <TodoItems
               status={Status.Doing}
               items={state.doingItems}
               onClickCreate={handleClickCreate}
+              onMoveItem={handleMoveItem}
             ></TodoItems>
             <Divider type="vertical" />
             <TodoItems
               status={Status.Done}
               items={state.doneItems}
               onClickCreate={handleClickCreate}
+              onMoveItem={handleMoveItem}
             ></TodoItems>
           </Row>
         </Content>

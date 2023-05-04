@@ -12,6 +12,7 @@ const StyledTodoItemWrapper = styled(Col)`
 export const StyledTodoItemList = styled.ul`
   padding: 10px;
   margin-bottom: 0px;
+  min-height: 420px;
 `;
 
 export default StyledTodoItemWrapper;

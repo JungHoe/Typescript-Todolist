@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Form, FormInstance, Input } from "antd";
-import { TodoItemFormInterface } from "@/types";
+import { TodoItemInterface } from "@/types";
 import StyleItem from "@/style/TodoItem";
 
 interface FormProps {
   form: FormInstance;
-  onFinish: (value: TodoItemFormInterface) => void;
+  onFinish: (value: TodoItemInterface) => void;
   initialValues?: { title: string; description: string };
 }
 const TodoItemForm: React.FC<FormProps> = ({

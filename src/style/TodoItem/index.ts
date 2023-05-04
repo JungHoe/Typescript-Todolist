@@ -7,6 +7,10 @@ const StyledTodoItem = styled.li`
   position: relative;
   background-color: ${({ theme }) =>
     isThemeDark(theme) ? "#424448" : "#d8d1b8"};
+  &.empty {
+    background-color: inherit;
+    height: 400px;
+  }
   padding: 10px;
   padding-right: 20px;
   &.dragging {

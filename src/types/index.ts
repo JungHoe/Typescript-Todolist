@@ -18,4 +18,7 @@ export class TodoItem implements TodoItemInterface {
   setId(id: number) {
     this.id = id;
   }
+  setStatus(status: Status) {
+    this.status = status;
+  }
 }

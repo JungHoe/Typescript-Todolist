@@ -1,10 +1,7 @@
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-
 import TodoItemHeader from "@/components/TodoItemHeader";
 import { Status } from "@/types/enums";
 import { TodoItem as Item } from "@/types";
-import TodoItem from "@/components/TodoItem";
+import TodoItem, { DraggableEmptyTodoItem } from "@/components/TodoItem";
 import StyledTodoItemWrapper, {
   StyledTodoItemList,
 } from "@/style/TodoItem/wrapper";
@@ -28,8 +25,8 @@ const TodoItems: React.FC<TodoItemsProps> = ({
         onClickIcon={onClickCreate}
       ></TodoItemHeader>
       <StyledTodoItemList>
-        <DndProvider backend={HTML5Backend}>
-          {items?.map((item, index) => (
+        {items.length > 0 ? (
+          items.map((item, index) => (
             <TodoItem
               key={item.id}
               item={item}
@@ -37,8 +34,10 @@ const TodoItems: React.FC<TodoItemsProps> = ({
               useInteractionButton
               onMoveItem={onMoveItem}
             ></TodoItem>
-          ))}
-        </DndProvider>
+          ))
+        ) : (
+          <DraggableEmptyTodoItem status={status} onMoveItem={onMoveItem} />
+        )}
       </StyledTodoItemList>
     </StyledTodoItemWrapper>
   );

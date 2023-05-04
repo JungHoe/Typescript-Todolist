@@ -21,6 +21,24 @@ interface TodoItemProps {
   onMoveItem: Function;
 }
 
+export const DraggableEmptyTodoItem = ({
+  status,
+  onMoveItem,
+}: {
+  status: any;
+  onMoveItem: Function;
+}) => {
+  const [, drop] = useDrop({
+    accept: "list",
+    hover: (dragItem: itemWithIndex) => {
+      onMoveItem({ ...dragItem }, { index: -1, status });
+      dragItem.index = 0;
+      dragItem.status = status;
+    },
+  });
+  return <StyleItem className="empty" ref={drop}></StyleItem>;
+};
+
 const TodoItem = ({
   item,
   index,
@@ -32,21 +50,27 @@ const TodoItem = ({
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: "list",
-      item: { ...item, index },
+      item: { ...item, index, status },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
+      isDragging: (monitor) => {
+        return monitor.getItem().id === id;
+      },
     }),
-    [index]
+    [status, index]
   );
 
   const [, drop] = useDrop({
     accept: "list",
     hover: (dragItem: itemWithIndex, monitor) => {
-      // // 동일한 아이템인경우 이동하지않음
+      if (dragItem.id === id) {
+        return;
+      }
       if (dragItem.status === status && dragItem.index === index) {
         return;
       }
+
       // Determine rectangle on screen
       const hoverBoundingRect = ref.current!.getBoundingClientRect();
 
@@ -68,14 +92,17 @@ const TodoItem = ({
       if (dragItem.index < index && hoverClientY < hoverMiddleY) {
         return;
       }
-
       // // Dragging upwards
       if (dragItem.index > index && hoverClientY > hoverMiddleY) {
         return;
       }
-      // // Time to actually perform the action
       onMoveItem({ ...dragItem }, { ...item, index });
-      dragItem.index = index;
+      if (dragItem.status === status) {
+        dragItem.index = index;
+      } else {
+        dragItem.index = index + 1;
+        dragItem.status = status;
+      }
     },
   });
 

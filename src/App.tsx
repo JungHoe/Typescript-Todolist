@@ -1,4 +1,6 @@
 import "@/style/global.css";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { useState, useReducer } from "react";
 import { Layout, Row, Divider } from "antd";
 import WithTheme, { ThemeProps } from "@/hoc/withTheme";
@@ -47,28 +49,30 @@ const App: React.FC<ThemeProps> = ({ theme, onChangeTheme }) => {
             onAddItem={handleAddItem}
             status={itemStatusType}
           ></TodoItemModal>
-          <Row className="itemRow" justify={"center"}>
-            <TodoItems
-              status={Status.Todo}
-              items={state.todoItems}
-              onClickCreate={handleClickCreate}
-              onMoveItem={handleMoveItem}
-            ></TodoItems>
-            <Divider type="vertical" />
-            <TodoItems
-              status={Status.Doing}
-              items={state.doingItems}
-              onClickCreate={handleClickCreate}
-              onMoveItem={handleMoveItem}
-            ></TodoItems>
-            <Divider type="vertical" />
-            <TodoItems
-              status={Status.Done}
-              items={state.doneItems}
-              onClickCreate={handleClickCreate}
-              onMoveItem={handleMoveItem}
-            ></TodoItems>
-          </Row>
+          <DndProvider backend={HTML5Backend}>
+            <Row className="itemRow" justify={"center"}>
+              <TodoItems
+                status={Status.Todo}
+                items={state.todoItems}
+                onClickCreate={handleClickCreate}
+                onMoveItem={handleMoveItem}
+              ></TodoItems>
+              <Divider type="vertical" />
+              <TodoItems
+                status={Status.Doing}
+                items={state.doingItems}
+                onClickCreate={handleClickCreate}
+                onMoveItem={handleMoveItem}
+              ></TodoItems>
+              <Divider type="vertical" />
+              <TodoItems
+                status={Status.Done}
+                items={state.doneItems}
+                onClickCreate={handleClickCreate}
+                onMoveItem={handleMoveItem}
+              ></TodoItems>
+            </Row>
+          </DndProvider>
         </Content>
       </Layout>
       <Footer className="ta-c">footer</Footer>

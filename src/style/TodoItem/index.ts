@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { isThemeDark } from "@/hooks";
 
 const StyledTodoItem = styled.li`
+  &.form-wrapper {
+    min-height: 220px;
+  }
   max-width: 500px;
   list-style: none;
   position: relative;
@@ -50,6 +53,8 @@ const StyledTodoItem = styled.li`
     }
   }
   form {
+    width: 100%;
+    height: 100%;
     .form-title {
       margin-bottom: 0.5em;
     }

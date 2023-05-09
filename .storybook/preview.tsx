@@ -1,8 +1,12 @@
-import React from "react";
-import type { Preview } from "@storybook/react";
-import { Layout } from "antd";
 import "@/style/global.css";
 import "antd/dist/reset.css";
+
+import React from "react";
+import { Layout } from "antd";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import type { Preview } from "@storybook/react";
+
 import { Theme } from "../src/types/enums";
 import WithTheme from "../src/hoc/withTheme";
 
@@ -20,9 +24,11 @@ const preview: Preview = {
   decorators: [
     (Story: any, arg) => {
       const WrappedStory = () => (
-        <Layout id="layout-wrapper" className={arg.parameters.theme}>
-          <Story></Story>
-        </Layout>
+        <DndProvider backend={HTML5Backend}>
+          <Layout id="layout-wrapper" className={arg.parameters.theme}>
+            <Story></Story>
+          </Layout>
+        </DndProvider>
       );
       const initState = arg.parameters.theme === Theme.dark;
       const Comp = WithTheme(WrappedStory, initState);

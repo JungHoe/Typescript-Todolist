@@ -19,7 +19,7 @@ const TodoItemForm: React.FC<FormProps> = ({
     };
   }, []);
   return (
-    <StyleItem>
+    <StyleItem className="form-wrapper">
       <Form
         form={form}
         name="basic"
@@ -34,6 +34,7 @@ const TodoItemForm: React.FC<FormProps> = ({
         </Form.Item>
         <Form.Item name={"description"} noStyle={true}>
           <Input.TextArea
+            styles={{ textarea: { borderWidth: "1px" } }}
             autoSize={{ minRows: 5 }}
             className="form-description"
             placeholder="Click to add text"

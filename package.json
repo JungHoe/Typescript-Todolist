@@ -62,6 +62,9 @@
       "\\.svg": "jest-svg-transformer",
       "^@/(.*)$": "<rootDir>/src/$1"
     },
+    "transformIgnorePatterns":[
+      "/node_modules/(?!react-dnd|dnd-core|@react-dnd)"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/example/"

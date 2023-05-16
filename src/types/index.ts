@@ -21,4 +21,10 @@ export class TodoItem implements TodoItemInterface {
   setStatus(status: Status) {
     this.status = status;
   }
+  setTitle(title: string) {
+    this.title = title;
+  }
+  setDescription(description: string) {
+    this.description = description;
+  }
 }

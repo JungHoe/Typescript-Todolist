@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import { Button, Popover } from "antd";
 import { useDrop, useDrag } from "react-dnd";
-
 import { SmallDashOutlined, MenuOutlined } from "@ant-design/icons";
 import { TodoItem as Item } from "@/types";
+import { useToggleButton } from "@/hooks";
 import StyleItem from "@/style/TodoItem";
 import InteractionButton from "@/style/TodoItem/InteractionButton";
 
@@ -19,6 +19,8 @@ interface TodoItemProps {
    * 상호작용 버튼 활성화 여부입니다.
    */
   onMoveItem: Function;
+  onClickEdit?: Function;
+  onClickRemove?: Function;
 }
 
 export const DraggableEmptyTodoItem = ({
@@ -44,7 +46,10 @@ const TodoItem = ({
   index,
   useInteractionButton = true,
   onMoveItem,
+  onClickEdit = () => false,
+  onClickRemove = () => false,
 }: TodoItemProps) => {
+  const { open, onOpenChange } = useToggleButton();
   const ref = useRef<HTMLLIElement | null>(null);
   const { id, title, description, status } = item;
   const [{ isDragging }, drag, preview] = useDrag(
@@ -122,11 +127,27 @@ const TodoItem = ({
         <>
           <MenuOutlined className="dragCursor" ref={drag} />
           <Popover
+            open={open}
+            onOpenChange={onOpenChange}
             trigger={"click"}
             content={
               <InteractionButton>
-                <Button>Edit</Button>
-                <Button>Remove</Button>
+                <Button
+                  onClick={() => {
+                    onClickEdit({ status, index });
+                    onOpenChange(false);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => {
+                    onClickRemove({ status, id });
+                    onOpenChange(false);
+                  }}
+                >
+                  Remove
+                </Button>
               </InteractionButton>
             }
           >

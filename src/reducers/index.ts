@@ -8,22 +8,10 @@ interface redcuerInterface {
   doneItems: TodoItem[];
 }
 
-const sampleItem1 = new TodoItem(
-  "테마 모드 구현",
-  "테스트 메세지. \n 개행테스트",
-  Status.Done
-);
-const sampleItem2 = new TodoItem(
-  "line-clamp 테스트",
-  `내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@`,
-  Status.Done
-);
-sampleItem1.setId(1);
-sampleItem2.setId(2);
 export const initialState = {
   todoItems: [],
   doingItems: [],
-  doneItems: [sampleItem1, sampleItem2],
+  doneItems: [],
 };
 
 export const todoReducer = (
@@ -32,13 +20,29 @@ export const todoReducer = (
 ) => {
   switch (type) {
     case actions.ADD_ITEM:
-      const itemKey = `${payload.status}Items` as keyof redcuerInterface;
+      const addStateKey = `${payload.status}Items` as keyof redcuerInterface;
       const newItem = new TodoItem(
         payload.title,
         payload.description,
         payload.status
       );
-      return { ...state, [itemKey]: [...state[itemKey], newItem] };
+      return { ...state, [addStateKey]: [...state[addStateKey], newItem] };
+    case actions.EDIT_ITEM:
+      const editStateKey = `${payload.status}Items` as keyof redcuerInterface;
+      const nextEditItems = state[editStateKey].map((item) => {
+        if (item.id === payload.id) {
+          item.setTitle(payload.title);
+          item.setDescription(payload.description);
+        }
+        return item;
+      });
+      return { ...state, [editStateKey]: nextEditItems };
+    case actions.REMOVE_ITEM:
+      const removeStateKey = `${payload.status}Items` as keyof redcuerInterface;
+      const nextRemoveItems = state[removeStateKey].filter(
+        (item) => item.id !== payload.id
+      );
+      return { ...state, [removeStateKey]: nextRemoveItems };
     case actions.MOVE_ITEM:
       const { dragItem, overItem } = payload;
       const dragIndex = dragItem.index;
@@ -77,7 +81,6 @@ export const todoReducer = (
         const nextOverItems = [poped];
         return { ...state, [dragKey]: nextDragItems, [overKey]: nextOverItems };
       }
-    //TO-DO overItem이 없는경우 마지막에 추가를함
     default:
       return state;
   }

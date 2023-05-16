@@ -11,12 +11,16 @@ interface TodoItemsProps {
   items: Item[];
   onClickCreate: Function;
   onMoveItem: Function;
+  onClickEdit?: Function;
+  onClickRemove?: Function;
 }
 const TodoItems: React.FC<TodoItemsProps> = ({
   status,
   items,
   onClickCreate,
   onMoveItem,
+  onClickEdit,
+  onClickRemove,
 }) => {
   return (
     <StyledTodoItemWrapper className={`item-${status}`} span={7}>
@@ -33,6 +37,8 @@ const TodoItems: React.FC<TodoItemsProps> = ({
               index={index}
               useInteractionButton
               onMoveItem={onMoveItem}
+              onClickEdit={onClickEdit}
+              onClickRemove={onClickRemove}
             ></TodoItem>
           ))
         ) : (

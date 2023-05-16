@@ -7,10 +7,12 @@ const StyledTodoItemWrapper = styled(Col)`
   background-color: ${({ theme }) =>
     isThemeDark(theme) ? "#212226" : "#f1e9cd"};
   padding-bottom: 10px;
-  ul {
-    padding: 10px;
-    margin-bottom: 0px;
-  }
+`;
+
+export const StyledTodoItemList = styled.ul`
+  padding: 10px;
+  margin-bottom: 0px;
+  min-height: 420px;
 `;
 
 export default StyledTodoItemWrapper;

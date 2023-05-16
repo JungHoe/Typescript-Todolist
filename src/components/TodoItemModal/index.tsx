@@ -1,26 +1,47 @@
 import React from "react";
-import { Form } from "antd";
-import { Status, StatusLabel } from "@/types/enums";
-import { TodoItemFormInterface } from "@/types";
+import { Descriptions, Form } from "antd";
+import { Mode, Status, StatusLabel } from "@/types/enums";
+import { TodoItem, TodoItemInterface } from "@/types";
 
 import TodoItemForm from "@/components/TodoItemForm";
 import StyledTodoModal from "@/style/TodoItem/Modal";
 
 interface ModalProperty {
   isOpen: boolean;
+  mode: Mode;
+  selectedItem?: TodoItem;
   toggleModal: Function;
-  onAddItem: (payload: TodoItemFormInterface) => void;
+  onAddItem: (payload: TodoItemInterface) => void;
+  onEditItem: (payload: TodoItemInterface) => void;
   status: Status;
 }
 
 const TodoItemModal: React.FC<ModalProperty> = ({
   isOpen,
+  selectedItem,
   toggleModal,
   onAddItem,
+  onEditItem,
   status,
+  mode,
 }) => {
   const [form] = Form.useForm();
-
+  const handleFinish = (payload: TodoItemInterface) => {
+    if (mode === Mode.create) {
+      onAddItem(payload);
+    } else {
+      onEditItem({ ...payload, id: selectedItem!.id });
+    }
+  };
+  const initialValues = React.useMemo(() => {
+    if (selectedItem) {
+      return {
+        title: selectedItem.title,
+        description: selectedItem.description,
+      };
+    }
+    return { title: "", description: "" };
+  }, [selectedItem]);
   return (
     <StyledTodoModal
       open={isOpen}
@@ -30,7 +51,11 @@ const TodoItemModal: React.FC<ModalProperty> = ({
     >
       <h3>{StatusLabel[status]}</h3>
       <ul>
-        <TodoItemForm form={form} onFinish={onAddItem}></TodoItemForm>
+        <TodoItemForm
+          form={form}
+          onFinish={handleFinish}
+          initialValues={initialValues}
+        ></TodoItemForm>
       </ul>
     </StyledTodoModal>
   );

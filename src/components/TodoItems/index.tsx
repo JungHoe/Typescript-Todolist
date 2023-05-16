@@ -1,18 +1,26 @@
 import TodoItemHeader from "@/components/TodoItemHeader";
 import { Status } from "@/types/enums";
-import { TodoItemInterface } from "@/types";
-import TodoItem from "@/components/TodoItem";
-import StyledTodoItemWrapper from "@/style/TodoItem/wrapper";
+import { TodoItem as Item } from "@/types";
+import TodoItem, { DraggableEmptyTodoItem } from "@/components/TodoItem";
+import StyledTodoItemWrapper, {
+  StyledTodoItemList,
+} from "@/style/TodoItem/wrapper";
 
 interface TodoItemsProps {
   status: Status;
-  items: TodoItemInterface[];
+  items: Item[];
   onClickCreate: Function;
+  onMoveItem: Function;
+  onClickEdit?: Function;
+  onClickRemove?: Function;
 }
 const TodoItems: React.FC<TodoItemsProps> = ({
   status,
-  onClickCreate,
   items,
+  onClickCreate,
+  onMoveItem,
+  onClickEdit,
+  onClickRemove,
 }) => {
   return (
     <StyledTodoItemWrapper className={`item-${status}`} span={7}>
@@ -20,15 +28,23 @@ const TodoItems: React.FC<TodoItemsProps> = ({
         type={status}
         onClickIcon={onClickCreate}
       ></TodoItemHeader>
-      <ul>
-        {items?.map((item) => (
-          <TodoItem
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          ></TodoItem>
-        ))}
-      </ul>
+      <StyledTodoItemList>
+        {items.length > 0 ? (
+          items.map((item, index) => (
+            <TodoItem
+              key={item.id}
+              item={item}
+              index={index}
+              useInteractionButton
+              onMoveItem={onMoveItem}
+              onClickEdit={onClickEdit}
+              onClickRemove={onClickRemove}
+            ></TodoItem>
+          ))
+        ) : (
+          <DraggableEmptyTodoItem status={status} onMoveItem={onMoveItem} />
+        )}
+      </StyledTodoItemList>
     </StyledTodoItemWrapper>
   );
 };

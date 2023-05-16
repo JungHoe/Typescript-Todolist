@@ -1,21 +1,31 @@
 import React, { useEffect } from "react";
 import { Form, FormInstance, Input } from "antd";
-import { TodoItemFormInterface } from "@/types";
+import { TodoItemInterface } from "@/types";
 import StyleItem from "@/style/TodoItem";
 
 interface FormProps {
   form: FormInstance;
-  onFinish: (value: TodoItemFormInterface) => void;
+  onFinish: (value: TodoItemInterface) => void;
+  initialValues?: { title: string; description: string };
 }
-const TodoItemForm: React.FC<FormProps> = ({ form, onFinish }) => {
+const TodoItemForm: React.FC<FormProps> = ({
+  form,
+  onFinish,
+  initialValues,
+}) => {
   useEffect(() => {
     return () => {
-      form.resetFields();
+      form?.resetFields();
     };
   }, []);
   return (
-    <StyleItem>
-      <Form form={form} name="basic" onFinish={onFinish}>
+    <StyleItem className="form-wrapper">
+      <Form
+        form={form}
+        name="basic"
+        onFinish={onFinish}
+        initialValues={initialValues}
+      >
         <Form.Item name={"title"} noStyle={true}>
           <Input
             className="form-title"
@@ -24,6 +34,7 @@ const TodoItemForm: React.FC<FormProps> = ({ form, onFinish }) => {
         </Form.Item>
         <Form.Item name={"description"} noStyle={true}>
           <Input.TextArea
+            styles={{ textarea: { borderWidth: "1px" } }}
             autoSize={{ minRows: 5 }}
             className="form-description"
             placeholder="Click to add text"

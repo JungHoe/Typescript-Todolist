@@ -1,42 +1,17 @@
 import { Status } from "@/types/enums";
-import { TodoItemInterface } from "@/types";
+import { TodoItem } from "@/types";
 import * as actions from "./actions";
-interface redcuerInterface {
-  todoItems: TodoItemInterface[];
-  doingItems: TodoItemInterface[];
-  doneItems: TodoItemInterface[];
-}
 
-class Item {
-  private id: number;
-  constructor(
-    public title: string,
-    public description: string,
-    public order: number
-  ) {
-    this.id = new Date().getTime();
-  }
+interface redcuerInterface {
+  todoItems: TodoItem[];
+  doingItems: TodoItem[];
+  doneItems: TodoItem[];
 }
 
 export const initialState = {
   todoItems: [],
   doingItems: [],
-  doneItems: [
-    {
-      id: 1,
-      title: "테마 모드 구현",
-      status: Status.Done,
-      description: "테스트 메세지. \n 개행테스트",
-      order: 1,
-    },
-    {
-      id: 2,
-      title: "line-clamp 테스트",
-      status: Status.Done,
-      description: `내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@내용@@`,
-      order: 2,
-    },
-  ],
+  doneItems: [],
 };
 
 export const todoReducer = (
@@ -45,10 +20,67 @@ export const todoReducer = (
 ) => {
   switch (type) {
     case actions.ADD_ITEM:
-      const itemKey = `${payload.status}Items` as keyof redcuerInterface;
-      const nextOrder = state[itemKey].length + 1;
-      const t1 = new Item(payload.title, payload.description, nextOrder);
-      return { ...state, [itemKey]: [...state[itemKey], t1] };
+      const addStateKey = `${payload.status}Items` as keyof redcuerInterface;
+      const newItem = new TodoItem(
+        payload.title,
+        payload.description,
+        payload.status
+      );
+      return { ...state, [addStateKey]: [...state[addStateKey], newItem] };
+    case actions.EDIT_ITEM:
+      const editStateKey = `${payload.status}Items` as keyof redcuerInterface;
+      const nextEditItems = state[editStateKey].map((item) => {
+        if (item.id === payload.id) {
+          item.setTitle(payload.title);
+          item.setDescription(payload.description);
+        }
+        return item;
+      });
+      return { ...state, [editStateKey]: nextEditItems };
+    case actions.REMOVE_ITEM:
+      const removeStateKey = `${payload.status}Items` as keyof redcuerInterface;
+      const nextRemoveItems = state[removeStateKey].filter(
+        (item) => item.id !== payload.id
+      );
+      return { ...state, [removeStateKey]: nextRemoveItems };
+    case actions.MOVE_ITEM:
+      const { dragItem, overItem } = payload;
+      const dragIndex = dragItem.index;
+      if (dragItem.status === overItem.status) {
+        const itemKey = `${dragItem.status}Items` as keyof redcuerInterface;
+        const items = state[itemKey];
+        const overIndex = overItem.index;
+        const nextItems = [...items];
+        const [poped] = nextItems.splice(dragIndex, 1);
+        nextItems.splice(overIndex, 0, poped);
+        return { ...state, [itemKey]: nextItems };
+      }
+      if (overItem.index !== -1) {
+        // 1. 기존 status에서 해당 Index 제거
+        const dragKey = `${dragItem.status}Items` as keyof redcuerInterface;
+        const dragItems = state[dragKey];
+        const nextDragItems = [...dragItems];
+        const [poped] = nextDragItems.splice(dragIndex, 1);
+        // 2. over status 에 추가
+        const overIndex = overItem.index;
+        const overKey = `${overItem.status}Items` as keyof redcuerInterface;
+        const overItems = state[overKey];
+        const nextOverItems = [...overItems];
+        poped.setStatus(overItem.status);
+        nextOverItems.splice(overIndex + 1, 0, poped);
+        return { ...state, [dragKey]: nextDragItems, [overKey]: nextOverItems };
+      } else {
+        // 1. 기존 status에서 해당 Index 제거
+        const dragKey = `${dragItem.status}Items` as keyof redcuerInterface;
+        const dragItems = state[dragKey];
+        const nextDragItems = [...dragItems];
+        const [poped] = nextDragItems.splice(dragIndex, 1);
+        // 2. over status 에 추가
+        poped.setStatus(overItem.status);
+        const overKey = `${overItem.status}Items` as keyof redcuerInterface;
+        const nextOverItems = [poped];
+        return { ...state, [dragKey]: nextDragItems, [overKey]: nextOverItems };
+      }
     default:
       return state;
   }

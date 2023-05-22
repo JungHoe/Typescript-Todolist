@@ -1,5 +1,5 @@
 import React from "react";
-import { Descriptions, Form } from "antd";
+import { Form } from "antd";
 import { Mode, Status, StatusLabel } from "@/types/enums";
 import { TodoItem, TodoItemInterface } from "@/types";
 
@@ -43,19 +43,10 @@ const TodoItemModal: React.FC<ModalProperty> = ({
     return { title: "", description: "" };
   }, [selectedItem]);
   return (
-    <StyledTodoModal
-      open={isOpen}
-      onCancel={() => toggleModal()}
-      destroyOnClose={true}
-      onOk={() => form.submit()}
-    >
+    <StyledTodoModal open={isOpen} onCancel={() => toggleModal()} destroyOnClose={true} onOk={() => form.submit()}>
       <h3>{StatusLabel[status]}</h3>
       <ul>
-        <TodoItemForm
-          form={form}
-          onFinish={handleFinish}
-          initialValues={initialValues}
-        ></TodoItemForm>
+        <TodoItemForm form={form} onFinish={handleFinish} initialValues={initialValues}></TodoItemForm>
       </ul>
     </StyledTodoModal>
   );

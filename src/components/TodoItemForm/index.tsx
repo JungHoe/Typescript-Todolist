@@ -8,29 +8,15 @@ interface FormProps {
   onFinish: (value: TodoItemInterface) => void;
   initialValues?: { title: string; description: string };
 }
-const TodoItemForm: React.FC<FormProps> = ({
-  form,
-  onFinish,
-  initialValues,
-}) => {
+const TodoItemForm: React.FC<FormProps> = ({ form, onFinish, initialValues }) => {
   useEffect(() => {
-    return () => {
-      form?.resetFields();
-    };
+    form?.resetFields();
   }, []);
   return (
     <StyleItem className="form-wrapper">
-      <Form
-        form={form}
-        name="basic"
-        onFinish={onFinish}
-        initialValues={initialValues}
-      >
+      <Form form={form} name="basic" onFinish={onFinish} initialValues={initialValues}>
         <Form.Item name={"title"} noStyle={true}>
-          <Input
-            className="form-title"
-            placeholder="Click to add title"
-          ></Input>
+          <Input className="form-title" placeholder="Click to add title"></Input>
         </Form.Item>
         <Form.Item name={"description"} noStyle={true}>
           <Input.TextArea
